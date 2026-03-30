@@ -1,42 +1,765 @@
+/* ========================================
+   BAUST Lab Report Generator — Global CSS
+   ======================================== */
+
+/* ---------- Reset & Variables ---------- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-primary: #0a0e1a;
+  --bg-card: rgba(17, 24, 39, 0.7);
+  --bg-input: rgba(15, 23, 42, 0.8);
+  --border-color: rgba(99, 102, 241, 0.15);
+  --border-hover: rgba(99, 102, 241, 0.4);
+  --border-focus: rgba(99, 102, 241, 0.7);
+  --accent-secondary: #818cf8;
+  --accent-glow: rgba(99, 102, 241, 0.3);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
-html,
 body {
-  max-width: 100vw;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
   overflow-x: hidden;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* ---------- Background Glow ---------- */
+.bg-glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+.glow-1 {
+  width: 600px;
+  height: 600px;
+  background: #6366f1;
+  top: -200px;
+  left: -100px;
+  animation: floatGlow 15s ease-in-out infinite;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.glow-2 {
+  width: 500px;
+  height: 500px;
+  background: #8b5cf6;
+  bottom: -150px;
+  right: -100px;
+  animation: floatGlow 18s ease-in-out infinite reverse;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+.glow-3 {
+  width: 400px;
+  height: 400px;
+  background: #06b6d4;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: floatGlow 20s ease-in-out infinite 5s;
+}
+
+@keyframes floatGlow {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
   }
+
+  25% {
+    transform: translate(30px, -40px);
+  }
+
+  50% {
+    transform: translate(-20px, 30px);
+  }
+
+  75% {
+    transform: translate(40px, 20px);
+  }
+}
+
+/* ---------- Header ---------- */
+.app-header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+}
+
+.app-title {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #e0e7ff, #a5b4fc, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title-icon {
+  font-size: 1.6rem;
+  -webkit-text-fill-color: initial;
+}
+
+.app-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-top: 0.4rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Main Container ---------- */
+.app-container {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 2rem;
+  align-items: start;
+}
+
+.panel-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.panel-header p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+}
+
+/* ---------- Form Panel ---------- */
+.form-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  backdrop-filter: blur(24px);
+  animation: slideInLeft 0.6s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.form-section {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(99, 102, 241, 0.08);
+  border-radius: var(--radius);
+  transition: border-color var(--transition);
+}
+
+.form-section:hover {
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.section-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.section-icon {
+  font-size: 1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.02em;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.88rem;
+  transition: all var(--transition);
+  outline: none;
+}
+
+.form-group input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-group input:hover,
+.form-group select:hover {
+  border-color: var(--border-hover);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+  background: rgba(15, 23, 42, 1);
+}
+
+.form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2rem;
+}
+
+.form-group select option {
+  background: #1e293b;
+  color: var(--text-primary);
+}
+
+/* ---------- Teacher Entries ---------- */
+.teacher-entry {
+  padding: 0.85rem;
+  background: rgba(99, 102, 241, 0.04);
+  border: 1px solid rgba(99, 102, 241, 0.1);
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  transition: border-color var(--transition);
+}
+
+.teacher-entry:hover {
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.teacher-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.teacher-number {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-remove-teacher {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-remove-teacher:hover {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.btn-add-teacher {
+  width: 100%;
+  padding: 0.65rem;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px dashed rgba(99, 102, 241, 0.3);
+  border-radius: 8px;
+  color: var(--accent-secondary);
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+
+.btn-add-teacher:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.btn-add-teacher span {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* ---------- Download ---------- */
+.download-section {
+  margin-top: 1.75rem;
+  padding: 1.25rem;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.12);
+  border-radius: var(--radius);
+}
+
+.download-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--transition);
+  border-radius: inherit;
+}
+
+.btn:hover::before {
+  opacity: 1;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-icon {
+  font-size: 1.05rem;
+}
+
+.btn-pdf {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.btn-pdf::before {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.btn-pdf:hover {
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
+}
+
+.btn-docx {
+  background: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.btn-docx::before {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.btn-docx:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
+.btn-png {
+  background: rgba(16, 185, 129, 0.15);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.btn-png::before {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.btn-png:hover {
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+
+.btn.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.btn.loading .btn-icon {
+  display: none;
+}
+
+.btn.loading::after {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-right: 6px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Preview Panel ---------- */
+.preview-panel {
+  position: sticky;
+  top: 1.5rem;
+  animation: slideInRight 0.6s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.preview-header {
+  margin-bottom: 1rem;
+}
+
+.preview-wrapper {
+  background: #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* ---------- A4 Page ---------- */
+.a4-page {
+  width: 595px;
+  height: 842px;
+  background: #ffffff;
+  color: #111;
+  padding: 30px 36px;
+  font-family: 'Times New Roman', 'Georgia', serif;
+  position: relative;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.report-header {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.university-name {
+  font-size: 20px;
+  font-weight: bold;
+  color: #111;
+  line-height: 1.35;
+  font-family: 'Times New Roman', 'Georgia', serif;
+}
+
+.logo-section {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.university-logo {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+}
+
+.report-title-section {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.report-type {
+  font-size: 22px;
+  font-weight: bold;
+  color: #111;
+}
+
+.report-course-info {
+  margin-bottom: 14px;
+  padding: 0 10px;
+}
+
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.info-table td {
+  padding: 4px 6px;
+  font-size: 14px;
+  vertical-align: top;
+}
+
+.label-cell {
+  width: 38%;
+  color: #111;
+}
+
+.separator-cell {
+  width: 5%;
+  text-align: center;
+}
+
+.value-cell {
+  width: 57%;
+  color: #222;
+}
+
+/* Comments */
+.report-comments {
+  margin: 14px 8px 10px;
+  font-size: 13px;
+}
+
+.comments-label {
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #111;
+}
+
+.comments-box {
+  border: 1.5px solid #111;
+  min-height: 130px;
+  padding: 8px;
+}
+
+/* Submission */
+.report-submission {
+  margin: 10px 8px 0;
+  flex: 1;
+}
+
+.submission-label-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8px;
+  margin-bottom: 8px;
+}
+
+.submission-label {
+  font-size: 15px;
+  color: #111;
+  flex: 1;
+  text-align: center;
+}
+
+.submission-boxes {
+  display: flex;
+  gap: 12px;
+}
+
+.submission-box {
+  flex: 1;
+  border: 1.5px solid #111;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.submitted-to-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.submitted-to-box .teachers-container {
+  flex: 1;
+}
+
+.signature-line {
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.submission-box p {
+  margin-bottom: 2px;
+}
+
+.level-term-line {
+  display: flex;
+  gap: 20px;
+}
+
+.teacher-preview-entry {
+  margin-bottom: 12px;
+}
+
+.teacher-preview-entry:last-child {
+  margin-bottom: 0;
+}
+
+.teacher-preview-entry .teacher-value {
+  padding-left: 10px;
+  color: #222;
+  min-height: 16px;
+}
+
+.teacher-divider {
+  border: none;
+  border-top: 1px dashed #999;
+  margin: 10px 0;
+}
+
+/* ---------- Footer ---------- */
+.app-footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  border-top: 1px solid rgba(99, 102, 241, 0.08);
+  margin-top: 1rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .app-container {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  .preview-panel {
+    position: relative;
+    top: 0;
+  }
+
+  .download-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-title {
+    font-size: 1.4rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-panel {
+    padding: 1rem;
+  }
+
+  .form-section {
+    padding: 0.85rem;
+  }
+
+  .a4-page {
+    padding: 20px 16px;
+    min-height: auto;
+    width: 100%;
+    height: auto;
+  }
+
+  .submission-boxes {
+    flex-direction: column;
+  }
+
+  .university-name {
+    font-size: 16px;
+  }
+
+  .report-type {
+    font-size: 18px;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
 }
