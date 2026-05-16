@@ -28,6 +28,15 @@ export interface FormData {
     teachers: { name: string; designation: string }[];
 }
 
+export interface ReportContent {
+    objectives: string[];
+    introduction: string;
+    algorithm: string[];
+    sourceCode: string;
+    diagram: string;
+    conclusion: string;
+}
+
 function formatDate(dateStr: string): string {
     const months = [
         "January", "February", "March", "April", "May", "June",
@@ -88,7 +97,7 @@ export async function downloadPNG(
     link.click();
 }
 
-export async function downloadDOCX(data: FormData): Promise<void> {
+export async function downloadDOCX(data: FormData, reportContent?: ReportContent | null): Promise<void> {
     const noBorder = {
         top: { style: BorderStyle.NONE, size: 0 },
         bottom: { style: BorderStyle.NONE, size: 0 },
@@ -432,6 +441,103 @@ export async function downloadDOCX(data: FormData): Promise<void> {
                     submissionTable,
                 ],
             },
+            // AI-generated report content pages
+            ...(reportContent ? [{
+                properties: {
+                    page: {
+                        margin: { top: 1000, right: 1200, bottom: 1000, left: 1200 },
+                    },
+                },
+                children: [
+                    // Objectives
+                    new Paragraph({
+                        spacing: { after: 200 },
+                        children: [
+                            new TextRun({ text: "Objectives:", bold: true, size: 28, font: "Times New Roman" }),
+                        ],
+                    }),
+                    ...reportContent.objectives.map((obj) =>
+                        new Paragraph({
+                            spacing: { after: 60 },
+                            indent: { left: 400 },
+                            children: [
+                                new TextRun({ text: `• ${obj}`, size: 24, font: "Times New Roman" }),
+                            ],
+                        })
+                    ),
+                    new Paragraph({ spacing: { after: 300 }, children: [] }),
+                    // Introduction
+                    new Paragraph({
+                        spacing: { after: 200 },
+                        children: [
+                            new TextRun({ text: "Introduction:", bold: true, size: 28, font: "Times New Roman" }),
+                        ],
+                    }),
+                    new Paragraph({
+                        spacing: { after: 300 },
+                        children: [
+                            new TextRun({ text: reportContent.introduction, size: 24, font: "Times New Roman" }),
+                        ],
+                    }),
+                    // Algorithm
+                    new Paragraph({
+                        spacing: { after: 200 },
+                        children: [
+                            new TextRun({ text: "Algorithm:", bold: true, size: 28, font: "Times New Roman" }),
+                        ],
+                    }),
+                    ...reportContent.algorithm.map((step, i) =>
+                        new Paragraph({
+                            spacing: { after: 80 },
+                            indent: { left: 400 },
+                            children: [
+                                new TextRun({ text: `Step ${i + 1}: `, bold: true, size: 24, font: "Times New Roman" }),
+                                new TextRun({ text: step, size: 24, font: "Times New Roman" }),
+                            ],
+                        })
+                    ),
+                    new Paragraph({ spacing: { after: 300 }, children: [] }),
+                    // Source Code
+                    new Paragraph({
+                        spacing: { after: 200 },
+                        children: [
+                            new TextRun({ text: "Source code:", bold: true, size: 28, font: "Times New Roman" }),
+                        ],
+                    }),
+                    new Paragraph({
+                        spacing: { after: 300 },
+                        children: [
+                            new TextRun({ text: reportContent.sourceCode, size: 20, font: "Courier New" }),
+                        ],
+                    }),
+                    // Diagram
+                    new Paragraph({
+                        spacing: { after: 200 },
+                        children: [
+                            new TextRun({ text: "Diagram:", bold: true, size: 28, font: "Times New Roman" }),
+                        ],
+                    }),
+                    new Paragraph({
+                        spacing: { after: 300 },
+                        children: [
+                            new TextRun({ text: reportContent.diagram, size: 24, font: "Times New Roman", italics: true, color: "666666" }),
+                        ],
+                    }),
+                    // Conclusion
+                    new Paragraph({
+                        spacing: { after: 200 },
+                        children: [
+                            new TextRun({ text: "Conclusion:", bold: true, size: 28, font: "Times New Roman" }),
+                        ],
+                    }),
+                    new Paragraph({
+                        spacing: { after: 300 },
+                        children: [
+                            new TextRun({ text: reportContent.conclusion, size: 24, font: "Times New Roman" }),
+                        ],
+                    }),
+                ],
+            }] : []),
         ],
     });
 
