@@ -323,6 +323,13 @@ export default function IndexGeneratorPage() {
                 <span className="btn-icon">🖼️</span>
                 {loading.png ? "Generating..." : "Download PNG"}
               </button>
+              <button
+                className="btn btn-print"
+                onClick={() => window.print()}
+              >
+                <span className="btn-icon">🖨️</span>
+                Print Report
+              </button>
             </div>
           </div>
         </section>

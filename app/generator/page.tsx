@@ -540,6 +540,13 @@ export default function GeneratorPage() {
                 <span className="btn-icon">🖼️</span>
                 {loading.png ? "Generating..." : "Download PNG"}
               </button>
+              <button
+                className="btn btn-print"
+                onClick={() => window.print()}
+              >
+                <span className="btn-icon">🖨️</span>
+                Print Report
+              </button>
             </div>
           </div>
         </section>
@@ -670,7 +677,6 @@ export default function GeneratorPage() {
                     <div className="teachers-container">
                       {form.teachers.map((teacher, i) => (
                         <div key={i}>
-                          {i > 0 && <hr className="teacher-divider" />}
                           <div className="teacher-preview-entry">
                             <p>
                               <b><i>Name of the Teacher:</i></b>

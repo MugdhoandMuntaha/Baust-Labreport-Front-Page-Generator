@@ -359,7 +359,7 @@ body {
 
 .download-buttons {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 0.75rem;
 }
 
@@ -444,6 +444,21 @@ body {
 .btn-png:hover {
   border-color: rgba(16, 185, 129, 0.5);
   box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+
+.btn-print {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fcd34d;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.btn-print::before {
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.btn-print:hover {
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
 }
 
 .btn.loading {
@@ -590,6 +605,9 @@ body {
 .report-comments {
   margin: 14px 8px 10px;
   font-size: 13px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .comments-label {
@@ -602,12 +620,12 @@ body {
   border: 1.5px solid #111;
   min-height: 80px;
   padding: 8px;
+  flex: 1;
 }
 
 /* Submission */
 .report-submission {
   margin: 10px 8px 0;
-  flex: 1;
 }
 
 .submission-label-row {
@@ -1099,4 +1117,46 @@ body {
   font-size: 13px;
   line-height: 1.5;
   padding: 6px 10px;
+}
+
+/* ---------- Print Styles ---------- */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .bg-glow, .app-header, .form-panel, .app-footer, .preview-header, .download-section, .btn-ai-generate {
+    display: none !important;
+  }
+  .app-container {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    grid-template-columns: 1fr !important;
+  }
+  .preview-panel {
+    position: static !important;
+    animation: none !important;
+    box-shadow: none !important;
+  }
+  .preview-wrapper {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+  .a4-page {
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 15mm 20mm !important;
+    width: 100% !important;
+    height: 99vh !important;
+    max-width: none !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+  @page {
+    margin: 0;
+    size: A4 portrait;
+  }
 }
