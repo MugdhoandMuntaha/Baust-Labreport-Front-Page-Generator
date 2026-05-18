@@ -6,6 +6,11 @@ export interface ExperimentEntry {
   mark: string;
 }
 
+export interface TeacherEntry {
+  name: string;
+  designation: string;
+}
+
 export interface IndexFormData {
   studentName: string;
   studentId: string;
@@ -13,8 +18,7 @@ export interface IndexFormData {
   term: string;
   section: string;
   dateOfSubmission: string;
-  teacherName: string;
-  teacherDesignation: string;
+  teachers: TeacherEntry[];
   experiments: ExperimentEntry[];
 }
 

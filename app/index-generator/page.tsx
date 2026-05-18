@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
-import type { IndexFormData, ExperimentEntry } from "./download";
+import type { IndexFormData, ExperimentEntry, TeacherEntry } from "./download";
 
 const TEACHER_PRESETS = [
   { name: "Md Atiq Shariar", designation: "Lecturer, EEE (Baust)" },
@@ -20,8 +20,7 @@ const INITIAL_FORM: IndexFormData = {
   term: "",
   section: "",
   dateOfSubmission: "",
-  teacherName: "",
-  teacherDesignation: "",
+  teachers: [{ name: "", designation: "" }],
   experiments: [{ no: "01", name: "", experimentDate: "", submissionDate: "", mark: "" }],
 };
 
@@ -40,11 +39,36 @@ export default function IndexGeneratorPage() {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const update = useCallback(
-    (field: keyof Omit<IndexFormData, "experiments">, value: string) => {
+    (field: keyof Omit<IndexFormData, "experiments" | "teachers">, value: string) => {
       setForm((prev) => ({ ...prev, [field]: value }));
     },
     []
   );
+
+  const updateTeacher = useCallback(
+    (index: number, field: keyof TeacherEntry, value: string) => {
+      setForm((prev) => {
+        const teachers = [...prev.teachers];
+        teachers[index] = { ...teachers[index], [field]: value };
+        return { ...prev, teachers };
+      });
+    },
+    []
+  );
+
+  const addTeacher = useCallback(() => {
+    setForm((prev) => ({
+      ...prev,
+      teachers: [...prev.teachers, { name: "", designation: "" }],
+    }));
+  }, []);
+
+  const removeTeacher = useCallback((index: number) => {
+    setForm((prev) => ({
+      ...prev,
+      teachers: prev.teachers.filter((_, i) => i !== index),
+    }));
+  }, []);
 
   const updateExperiment = useCallback(
     (index: number, field: keyof ExperimentEntry, value: string) => {
@@ -263,42 +287,65 @@ export default function IndexGeneratorPage() {
                 <span className="section-icon">👨‍🏫</span>
                 Submitted To
               </h3>
-              <div className="form-group">
-                <label>Quick Select Teacher</label>
-                <select
-                  value=""
-                  onChange={(e) => {
-                    const preset = TEACHER_PRESETS.find(t => t.name === e.target.value);
-                    if (preset) {
-                      update("teacherName", preset.name);
-                      update("teacherDesignation", preset.designation);
-                    }
-                  }}
-                >
-                  <option value="">— Select a teacher —</option>
-                  {TEACHER_PRESETS.map((t) => (
-                    <option key={t.name} value={t.name}>
-                      {t.name} — {t.designation}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Name of the Teacher</label>
-                <input
-                  value={form.teacherName}
-                  onChange={(e) => update("teacherName", e.target.value)}
-                  placeholder="Instructor's full name"
-                />
-              </div>
-              <div className="form-group">
-                <label>Designation</label>
-                <input
-                  value={form.teacherDesignation}
-                  onChange={(e) => update("teacherDesignation", e.target.value)}
-                  placeholder="e.g. Lecturer, EEE (Baust)"
-                />
-              </div>
+              {form.teachers.map((teacher, i) => (
+                <div key={i} className="teacher-entry">
+                  <div className="teacher-entry-header">
+                    <span className="teacher-number">Teacher {i + 1}</span>
+                    {i > 0 && (
+                      <button
+                        type="button"
+                        className="btn-remove-teacher"
+                        onClick={() => removeTeacher(i)}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label>Quick Select Teacher</label>
+                    <select
+                      value=""
+                      onChange={(e) => {
+                        const preset = TEACHER_PRESETS.find(t => t.name === e.target.value);
+                        if (preset) {
+                          updateTeacher(i, "name", preset.name);
+                          updateTeacher(i, "designation", preset.designation);
+                        }
+                      }}
+                    >
+                      <option value="">— Select a teacher —</option>
+                      {TEACHER_PRESETS.map((t) => (
+                        <option key={t.name} value={t.name}>
+                          {t.name} — {t.designation}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Name of the Teacher</label>
+                    <input
+                      value={teacher.name}
+                      onChange={(e) => updateTeacher(i, "name", e.target.value)}
+                      placeholder="Instructor's full name"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Designation</label>
+                    <input
+                      value={teacher.designation}
+                      onChange={(e) => updateTeacher(i, "designation", e.target.value)}
+                      placeholder="e.g. Lecturer, Dept. of CSE, BAUST"
+                    />
+                  </div>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn-add-teacher"
+                onClick={addTeacher}
+              >
+                <span>+</span> Add Another Teacher
+              </button>
             </div>
           </form>
 
@@ -428,15 +475,20 @@ export default function IndexGeneratorPage() {
 
                   {/* Submitted To Box */}
                   <div className="submission-box submitted-to-box">
-                    <p>
-                      <b>Name of Teacher:</b><br/>
-                      <span style={{ display: 'inline-block', marginLeft: '15px' }}>• {form.teacherName}</span>
-                    </p>
-                    <p>
-                      <b>Designation:</b><br/>
-                      <span style={{ display: 'inline-block', marginLeft: '15px' }}>• {form.teacherDesignation}</span>
-                    </p>
-                    
+                    <div className="teachers-container">
+                      {form.teachers.map((teacher, i) => (
+                        <div key={i} className="teacher-preview-entry">
+                          <p>
+                            <b>Name of Teacher:</b><br/>
+                            <span style={{ display: 'inline-block', marginLeft: '15px' }}>• {teacher.name}</span>
+                          </p>
+                          <p>
+                            <b>Designation:</b><br/>
+                            <span style={{ display: 'inline-block', marginLeft: '15px' }}>• {teacher.designation}</span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                     <p className="signature-line" style={{ marginTop: '10px', fontWeight: 'bold' }}>
                       Signature:...............................................
                     </p>
