@@ -62,24 +62,41 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { experimentName, courseTitle } = body;
+    const { experimentName, topic, courseTitle, type = "lab_report" } = body;
+    const name = experimentName || topic;
 
-    if (!experimentName) {
+    if (!name) {
       return NextResponse.json(
-        { error: "Experiment name is required" },
+        { error: type === "assignment" ? "Assignment topic is required" : "Experiment name is required" },
         { status: 400 }
       );
     }
 
     const groq = new Groq({ apiKey });
 
-    const userPrompt = `Generate a lab report for:
+    let systemPrompt = SYSTEM_PROMPT;
+    let userPrompt = `Generate a lab report for:
 Course: ${courseTitle || "N/A"}
-Experiment: ${experimentName}`;
+Experiment: ${name}`;
+
+    if (type === "assignment") {
+      systemPrompt = SYSTEM_PROMPT
+        .replace(/lab report/gi, "assignment report")
+        .replace(/laboratory reports/gi, "assignment reports")
+        .replace(/lab report writer/gi, "assignment writer")
+        .replace(/experiment title/gi, "assignment topic")
+        .replace(/experiment/gi, "assignment")
+        .replace(/Experiment:/gi, "Assignment Topic:")
+        .replace(/Experiment Name/gi, "Assignment Topic");
+
+      userPrompt = `Generate a comprehensive academic assignment report for:
+Course: ${courseTitle || "N/A"}
+Assignment Topic: ${name}`;
+    }
 
     const chatCompletion = await groq.chat.completions.create({
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
       ],
       model: "llama-3.3-70b-versatile",
