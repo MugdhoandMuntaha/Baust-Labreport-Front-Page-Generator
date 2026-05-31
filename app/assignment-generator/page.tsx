@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import type { FormData, ReportContent } from "./download";
+import type { AssignmentFormData, ReportContent } from "./download";
 
 const DEPARTMENTS = [
   "Computer Science and Engineering (CSE)",
@@ -39,17 +39,16 @@ const STUDENT_PRESETS = [
   { name: "Shidratul Muntaha", id: "0802420105101113", level: "2", term: "II" },
 ];
 
-const INITIAL_FORM: FormData = {
+const INITIAL_FORM: AssignmentFormData = {
   department: "",
   courseTitle: "",
   courseNo: "",
-  experimentNo: "",
-  experimentName: "",
+  assignmentNo: "",
+  assignmentTopic: "",
   studentName: "",
   studentId: "",
   level: "",
   term: "",
-  experimentDate: "",
   submissionDate: "",
   teachers: [{ name: "", designation: "" }],
 };
@@ -66,15 +65,15 @@ function formatDate(dateStr: string): string {
 
 import Link from "next/link";
 
-export default function GeneratorPage() {
-  const [form, setForm] = useState<FormData>(INITIAL_FORM);
+export default function AssignmentGeneratorPage() {
+  const [form, setForm] = useState<AssignmentFormData>(INITIAL_FORM);
   const [loading, setLoading] = useState({ pdf: false, png: false, docx: false });
   const [aiLoading, setAiLoading] = useState(false);
   const [reportContent, setReportContent] = useState<ReportContent | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
   const update = useCallback(
-    (field: keyof Omit<FormData, "teachers">, value: string) => {
+    (field: keyof Omit<AssignmentFormData, "teachers">, value: string) => {
       setForm((prev) => ({ ...prev, [field]: value }));
     },
     []
@@ -144,8 +143,8 @@ export default function GeneratorPage() {
   };
 
   const handleGenerateAI = async () => {
-    if (!form.experimentName.trim()) {
-      alert("Please enter an Experiment Name first.");
+    if (!form.assignmentTopic.trim()) {
+      alert("Please enter an Assignment Topic first.");
       return;
     }
     setAiLoading(true);
@@ -154,13 +153,14 @@ export default function GeneratorPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          experimentName: form.experimentName,
+          topic: form.assignmentTopic,
           courseTitle: form.courseTitle,
+          type: "assignment",
         }),
       });
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error || "Failed to generate report.");
+        alert(data.error || "Failed to generate assignment content.");
       } else {
         setReportContent(data.report);
       }
@@ -188,11 +188,11 @@ export default function GeneratorPage() {
             &larr; Back to Home
           </Link>
           <h1 className="app-title">
-            <span className="title-icon">📄</span>
-            BAUST Lab Report Generator
+            <span className="title-icon">📝</span>
+            BAUST Assignment Generator
           </h1>
           <p className="app-subtitle">
-            Generate professional lab report front pages instantly
+            Generate professional assignment cover pages instantly
           </p>
         </div>
       </header>
@@ -202,15 +202,15 @@ export default function GeneratorPage() {
         <section className="form-panel">
           <div className="panel-header">
             <h2>Fill in Details</h2>
-            <p>Enter your lab report information below</p>
+            <p>Enter your assignment information below</p>
           </div>
 
           <form onSubmit={(e) => e.preventDefault()} autoComplete="off">
-            {/* Course & Experiment */}
+            {/* Course & Assignment */}
             <div className="form-section">
               <h3 className="section-title">
                 <span className="section-icon">📚</span>
-                Course &amp; Experiment
+                Course &amp; Assignment
               </h3>
               <div className="form-group">
                 <label htmlFor="department">Department</label>
@@ -254,7 +254,7 @@ export default function GeneratorPage() {
                     id="courseTitle"
                     value={form.courseTitle}
                     onChange={(e) => update("courseTitle", e.target.value)}
-                    placeholder="e.g. Data Structures Lab"
+                    placeholder="e.g. Data Structures & Algorithms"
                   />
                 </div>
                 <div className="form-group">
@@ -263,27 +263,27 @@ export default function GeneratorPage() {
                     id="courseNo"
                     value={form.courseNo}
                     onChange={(e) => update("courseNo", e.target.value)}
-                    placeholder="e.g. CSE 2102"
+                    placeholder="e.g. CSE 2201"
                   />
                 </div>
               </div>
               <div className="form-group">
-                <label htmlFor="experimentNo">Experiment No</label>
+                <label htmlFor="assignmentNo">Assignment No</label>
                 <input
-                  id="experimentNo"
-                  value={form.experimentNo}
-                  onChange={(e) => update("experimentNo", e.target.value)}
+                  id="assignmentNo"
+                  value={form.assignmentNo}
+                  onChange={(e) => update("assignmentNo", e.target.value)}
                   placeholder="e.g. 01"
                   style={{ maxWidth: "48%" }}
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="experimentName">Experiment Name</label>
+                <label htmlFor="assignmentTopic">Assignment Topic</label>
                 <input
-                  id="experimentName"
-                  value={form.experimentName}
-                  onChange={(e) => update("experimentName", e.target.value)}
-                  placeholder="e.g. Implementation of Stack using Linked List"
+                  id="assignmentTopic"
+                  value={form.assignmentTopic}
+                  onChange={(e) => update("assignmentTopic", e.target.value)}
+                  placeholder="e.g. Applications of Dynamic Programming"
                 />
               </div>
               <button
@@ -293,7 +293,7 @@ export default function GeneratorPage() {
                 disabled={aiLoading}
               >
                 <span className="ai-sparkle">✨</span>
-                {aiLoading ? "AI is writing..." : "Generate Report with AI"}
+                {aiLoading ? "AI is writing..." : "Generate Assignment with AI"}
               </button>
             </div>
 
@@ -378,16 +378,7 @@ export default function GeneratorPage() {
                 </div>
               </div>
               <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="experimentDate">Date of Experiment</label>
-                  <input
-                    type="date"
-                    id="experimentDate"
-                    value={form.experimentDate}
-                    onChange={(e) => update("experimentDate", e.target.value)}
-                  />
-                </div>
-                <div className="form-group">
+                <div className="form-group" style={{ gridColumn: 'span 2' }}>
                   <label htmlFor="submissionDate">Date of Submission</label>
                   <input
                     type="date"
@@ -476,7 +467,7 @@ export default function GeneratorPage() {
             <div className="form-section ai-report-section">
               <h3 className="section-title">
                 <span className="section-icon">🤖</span>
-                AI-Generated Report Content
+                AI-Generated Assignment Content
               </h3>
               <p className="ai-hint">Edit any section below before downloading.</p>
 
@@ -576,7 +567,7 @@ export default function GeneratorPage() {
                 onClick={() => window.print()}
               >
                 <span className="btn-icon">🖨️</span>
-                Print Report
+                Print Assignment
               </button>
             </div>
           </div>
@@ -586,10 +577,10 @@ export default function GeneratorPage() {
         <section className="preview-panel">
           <div className="panel-header preview-header">
             <h2>Live Preview</h2>
-            <p>Your lab report front page</p>
+            <p>Your assignment cover page</p>
           </div>
           <div className="preview-wrapper">
-            <div className="a4-page" id="reportPreview" ref={previewRef}>
+            <div className="a4-page" id="assignmentPreview" ref={previewRef}>
               {/* University Name */}
               <div className="report-header">
                 <h1 className="university-name">
@@ -610,9 +601,9 @@ export default function GeneratorPage() {
                 />
               </div>
 
-              {/* Lab Report Title */}
+              {/* Assignment Title */}
               <div className="report-title-section">
-                <h2 className="report-type">Lab Report</h2>
+                <h2 className="report-type">Assignment</h2>
               </div>
 
               {/* Course Info Table */}
@@ -642,17 +633,17 @@ export default function GeneratorPage() {
                     </tr>
                     <tr>
                       <td className="label-cell">
-                        <b><i>Experiment No</i></b>
+                        <b><i>Assignment No</i></b>
                       </td>
                       <td className="separator-cell"><b>:</b></td>
-                      <td className="value-cell">{form.experimentNo}</td>
+                      <td className="value-cell">{form.assignmentNo}</td>
                     </tr>
                     <tr>
                       <td className="label-cell">
-                        <b><i>Experiment Name</i></b>
+                        <b><i>Assignment Topic</i></b>
                       </td>
                       <td className="separator-cell"><b>:</b></td>
-                      <td className="value-cell">{form.experimentName}</td>
+                      <td className="value-cell">{form.assignmentTopic}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -694,10 +685,6 @@ export default function GeneratorPage() {
                       </span>
                     </p>
                     <p>
-                      <b><i>Date of Experiment:</i></b>{" "}
-                      {formatDate(form.experimentDate)}
-                    </p>
-                    <p>
                       <b><i>Date of submission:</i></b>{" "}
                       {formatDate(form.submissionDate)}
                     </p>
@@ -736,7 +723,7 @@ export default function GeneratorPage() {
       </main>
 
       <footer className="app-footer">
-        <p>BAUST Lab Report Generator &copy; 2026 &mdash; Made with ❤️</p>
+        <p>BAUST Assignment Generator &copy; 2026 &mdash; Made with ❤️</p>
       </footer>
     </>
   );

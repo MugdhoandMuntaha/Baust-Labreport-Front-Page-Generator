@@ -13,6 +13,11 @@ const TEACHER_PRESETS = [
   { name: "S. M Golam Rifat", designation: "Lecturer, Dept. of CSE, BAUST" },
 ];
 
+const STUDENT_PRESETS = [
+  { name: "Shah Md Al Junaid", id: "0802420205101112", level: "2", term: "II" },
+  { name: "Shidratul Muntaha", id: "0802420105101113", level: "2", term: "II" },
+];
+
 const INITIAL_FORM: IndexFormData = {
   studentName: "",
   studentId: "",
@@ -219,6 +224,32 @@ export default function IndexGeneratorPage() {
                 <span className="section-icon">🎓</span>
                 Submitted By
               </h3>
+              <div className="form-group">
+                <label htmlFor="studentPreset">Quick Select Student</label>
+                <select
+                  id="studentPreset"
+                  value=""
+                  onChange={(e) => {
+                    const preset = STUDENT_PRESETS.find(s => s.name === e.target.value);
+                    if (preset) {
+                      setForm(prev => ({
+                        ...prev,
+                        studentName: preset.name,
+                        studentId: preset.id,
+                        level: preset.level,
+                        term: preset.term
+                      }));
+                    }
+                  }}
+                >
+                  <option value="">— Select a student —</option>
+                  {STUDENT_PRESETS.map((s) => (
+                    <option key={s.id} value={s.name}>
+                      {s.name} — {s.id}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="studentName">Name</label>
